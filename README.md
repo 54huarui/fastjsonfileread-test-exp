@@ -14,6 +14,14 @@
 
 <br>
 
+
+目前只支持commons-io 2.x的文件读取链子，适用版本：fastjson <=1.2.80 ,common-io 2.x
+
+
+
+
+
+
 ## 关于漏洞 CVE-2022-25845-In-Spring
 
 <br>
