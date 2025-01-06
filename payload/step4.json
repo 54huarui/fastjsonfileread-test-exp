@@ -1,0 +1,4 @@
+{
+    "@type":"java.lang.Exception",
+    "@type":"com.example.poc.PocException"
+  }

