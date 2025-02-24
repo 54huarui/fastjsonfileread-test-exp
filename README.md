@@ -45,7 +45,7 @@
 
 ### fastjson1.2.80e
 
-提供一个可以测试脚本的实例。包含fastjson1.2.80和commons-io 2.7依赖。测试点在http://ip/json路由下。当然你也可以当作ctf题去做
+提供一个可以测试脚本的实例。包含fastjson1.2.80和commons-io 2.7依赖。测试点在ip/json路由下。当然你也可以当作ctf题去做
 
 *请使用jdk1.8来运行本实例*
 
