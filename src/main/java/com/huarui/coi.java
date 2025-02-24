@@ -104,13 +104,13 @@ public class coi {
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
             connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            connection.setRequestProperty("Content-Type", "application/json");
             connection.setConnectTimeout(TIMEOUT);
             connection.setReadTimeout(TIMEOUT);
             connection.setDoOutput(true);
 
             try (OutputStream os = connection.getOutputStream()) {
-                os.write(("json=" + payload).getBytes(StandardCharsets.UTF_8));
+                os.write((payload).getBytes(StandardCharsets.UTF_8));
             }
 
             StringBuilder response = new StringBuilder();
